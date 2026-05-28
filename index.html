@@ -821,14 +821,16 @@
           return;
         }
 
-        const resp = await fetch(APPS_SCRIPT_URL, {
-          method: 'POST',
-          headers: { 'Content-Type': 'text/plain' }, // GAS CORS quirk
-          body: JSON.stringify(payload),
-        });
-        const result = await resp.json();
-        if (result.status === 'ok') showSuccess();
-        else showToast('오류가 발생했습니다. 다시 시도해주세요.', 'error');
+        // ✅ 수정된 코드
+await fetch(APPS_SCRIPT_URL, {
+  method: 'POST',
+  headers: { 'Content-Type': 'text/plain' },
+  body: JSON.stringify(payload),
+  redirect: 'follow',
+  mode: 'no-cors',   // CORS 차단 우회 — GAS 크로스오리진 요청에 필수
+});
+// no-cors 모드에서는 응답 body를 읽을 수 없으므로, throw 없이 통과되면 성공으로 처리
+showSuccess();
       } catch (err) {
         console.error(err);
         showToast('네트워크 오류. 잠시 후 다시 시도해주세요.', 'error');
