@@ -1,0 +1,855 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>점심 외식 맛집 추천 — 함께, 가온 여름호</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;500;700;900&family=Plus+Jakarta+Sans:wght@700;800&display=swap" rel="stylesheet" />
+
+  <style>
+    :root {
+      --sky-bg:       #EBF5FB;
+      --sky-card:     #F4F9FD;
+      --sky-deep:     #D3EAF6;
+      --ocean:        #0284C7;
+      --ocean-dark:   #0369A1;
+      --coral:        #F26530;
+      --coral-dark:   #D95520;
+      --navy:         #0C2340;
+      --slate:        #3D6180;
+      --muted:        #7B9BB5;
+      --border:       #BDD8EC;
+      --border-light: #D8EDF7;
+      --white:        #FFFFFF;
+      --mint:         #059669;
+      --error:        #DC2626;
+      /* legacy aliases so no other rules break */
+      --cream:        #EBF5FB;
+      --deep-cream:   #D3EAF6;
+      --rust:         #F26530;
+      --rust-light:   #D95520;
+      --warm-gold:    #0284C7;
+      --charcoal:     #0C2340;
+      --mid-brown:    #3D6180;
+      --light-border: #BDD8EC;
+      --success:      #059669;
+    }
+
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      background-color: var(--sky-bg);
+      color: var(--navy);
+      font-family: 'Noto Sans KR', sans-serif;
+      min-height: 100vh;
+      overflow-x: hidden;
+    }
+
+    /* ─── BG BLOBS ─── */
+    body::before {
+      content: '';
+      position: fixed;
+      top: -200px; right: -200px;
+      width: 600px; height: 600px;
+      background: radial-gradient(circle, rgba(2,132,199,0.09) 0%, transparent 70%);
+      pointer-events: none;
+      z-index: 0;
+    }
+
+    /* ─── HEADER BAND ─── */
+    .header-band {
+      background: var(--ocean);
+      color: var(--white);
+      text-align: center;
+      padding: 11px 24px;
+      font-size: 0.75rem;
+      letter-spacing: 0.15em;
+      text-transform: uppercase;
+      font-weight: 700;
+    }
+
+    /* ─── HERO ─── */
+    .hero {
+      position: relative;
+      padding: 56px 24px 40px;
+      text-align: center;
+      overflow: hidden;
+      z-index: 1;
+    }
+
+    .hero::after {
+      content: '';
+      position: absolute;
+      bottom: 0; left: 50%; transform: translateX(-50%);
+      width: 80px; height: 2px;
+      background: var(--coral);
+    }
+
+    .hero-label {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      font-size: 0.75rem;
+      letter-spacing: 0.16em;
+      font-weight: 700;
+      color: var(--ocean);
+      background: rgba(2,132,199,0.09);
+      padding: 5px 14px;
+      border-radius: 20px;
+      margin-bottom: 18px;
+    }
+
+    .hero h1 {
+      font-family: 'Plus Jakarta Sans', 'Noto Sans KR', sans-serif;
+      font-size: clamp(2rem, 6vw, 3.2rem);
+      font-weight: 800;
+      line-height: 1.18;
+      color: var(--navy);
+      letter-spacing: -0.02em;
+      margin-bottom: 8px;
+    }
+
+    .hero h1 em {
+      font-style: normal;
+      color: var(--coral);
+    }
+
+    .hero-sub {
+      font-size: 1rem;
+      color: var(--slate);
+      margin-top: 14px;
+      line-height: 1.75;
+      font-weight: 400;
+    }
+
+    /* ─── REWARD STRIP ─── */
+    .reward-strip {
+      position: relative;
+      z-index: 1;
+      margin: 36px auto 0;
+      max-width: 720px;
+      padding: 0 20px;
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 14px;
+    }
+
+    .reward-card {
+      background: var(--white);
+      border: 1.5px solid var(--border-light);
+      border-radius: 14px;
+      padding: 20px 22px;
+      display: flex;
+      gap: 14px;
+      align-items: flex-start;
+      box-shadow: 0 2px 16px rgba(2,132,199,0.07);
+      transition: transform 0.2s ease, box-shadow 0.2s ease;
+    }
+    .reward-card:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 6px 24px rgba(2,132,199,0.13);
+    }
+    .reward-card:first-child { border-top: 3px solid var(--ocean); }
+    .reward-card:last-child  { border-top: 3px solid var(--coral); }
+
+    .reward-icon {
+      font-size: 2rem;
+      line-height: 1;
+      flex-shrink: 0;
+    }
+
+    .reward-info strong {
+      display: block;
+      font-size: 0.72rem;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      color: var(--muted);
+      margin-bottom: 4px;
+      font-weight: 700;
+    }
+    .reward-info p {
+      font-size: 0.9rem;
+      color: var(--navy);
+      line-height: 1.55;
+    }
+    .reward-info p b { font-weight: 700; }
+
+    @media (max-width: 520px) {
+      .reward-strip { grid-template-columns: 1fr; }
+    }
+
+    /* ─── DEADLINE BADGE ─── */
+    .deadline-wrap {
+      position: relative; z-index: 1;
+      text-align: center;
+      margin: 30px 20px 0;
+    }
+    .deadline-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 10px;
+      background: var(--navy);
+      color: var(--white);
+      padding: 10px 22px;
+      border-radius: 40px;
+      font-size: 0.9rem;
+      font-weight: 700;
+    }
+    .deadline-badge span { font-size: 1.1rem; }
+
+    /* ─── FORM SECTION ─── */
+    .form-section {
+      position: relative; z-index: 1;
+      max-width: 720px;
+      margin: 44px auto 0;
+      padding: 0 20px 80px;
+    }
+
+    .form-card {
+      background: var(--white);
+      border: 1.5px solid var(--border-light);
+      border-radius: 20px;
+      padding: 44px 44px;
+      box-shadow: 0 4px 40px rgba(2,132,199,0.08);
+    }
+
+    @media (max-width: 560px) {
+      .form-card { padding: 28px 20px; }
+    }
+
+    .form-title {
+      font-family: 'Plus Jakarta Sans', 'Noto Sans KR', sans-serif;
+      font-size: 1.4rem;
+      font-weight: 800;
+      color: var(--navy);
+      margin-bottom: 6px;
+      letter-spacing: -0.01em;
+    }
+    .form-desc {
+      font-size: 0.87rem;
+      color: var(--slate);
+      margin-bottom: 32px;
+      line-height: 1.7;
+    }
+
+    .divider {
+      height: 1px;
+      background: var(--border-light);
+      margin: 28px 0;
+    }
+
+    .field-group {
+      margin-bottom: 26px;
+    }
+
+    label {
+      display: block;
+      font-size: 0.83rem;
+      font-weight: 700;
+      color: var(--navy);
+      margin-bottom: 8px;
+      letter-spacing: 0.01em;
+    }
+    label .required { color: var(--coral); margin-left: 3px; }
+    label .optional {
+      font-size: 0.75rem;
+      font-weight: 400;
+      color: var(--muted);
+      margin-left: 6px;
+    }
+
+    input[type="text"],
+    input[type="number"],
+    select,
+    textarea {
+      width: 100%;
+      background: var(--sky-card);
+      border: 1.5px solid var(--border);
+      border-radius: 10px;
+      padding: 12px 16px;
+      font-family: 'Noto Sans KR', sans-serif;
+      font-size: 0.93rem;
+      color: var(--navy);
+      outline: none;
+      transition: border-color 0.2s ease, box-shadow 0.2s ease, background 0.2s ease;
+      -webkit-appearance: none;
+    }
+    input:focus, select:focus, textarea:focus {
+      border-color: var(--ocean);
+      box-shadow: 0 0 0 3px rgba(2,132,199,0.12);
+      background: var(--white);
+    }
+    textarea { resize: vertical; min-height: 100px; }
+
+    .map-type-row {
+      display: flex;
+      gap: 10px;
+      margin-bottom: 10px;
+    }
+    .map-type-btn {
+      flex: 1;
+      padding: 9px 10px;
+      border: 1.5px solid var(--border);
+      border-radius: 8px;
+      background: var(--sky-card);
+      cursor: pointer;
+      font-family: 'Noto Sans KR', sans-serif;
+      font-size: 0.82rem;
+      font-weight: 700;
+      color: var(--slate);
+      transition: all 0.15s ease;
+      text-align: center;
+    }
+    .map-type-btn.active {
+      border-color: var(--ocean);
+      background: var(--ocean);
+      color: var(--white);
+    }
+
+    .walk-row {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+    .walk-row input { flex: 1; }
+    .walk-row .unit {
+      font-size: 0.9rem;
+      color: var(--slate);
+      white-space: nowrap;
+      font-weight: 700;
+    }
+
+    /* ─── IMAGE UPLOAD ─── */
+    .image-upload-area {
+      border: 2px dashed var(--border);
+      border-radius: 12px;
+      padding: 28px 20px;
+      text-align: center;
+      cursor: pointer;
+      transition: all 0.2s ease;
+      background: var(--sky-card);
+      position: relative;
+    }
+    .image-upload-area:hover, .image-upload-area.drag-over {
+      border-color: var(--ocean);
+      background: rgba(2,132,199,0.04);
+    }
+    .image-upload-area input[type="file"] {
+      position: absolute; inset: 0; opacity: 0; cursor: pointer; width: 100%; height: 100%;
+      padding: 0; border: none; background: transparent;
+    }
+    .upload-icon { font-size: 2rem; margin-bottom: 8px; }
+    .upload-text { font-size: 0.88rem; color: var(--muted); line-height: 1.5; }
+    .upload-text b { color: var(--ocean); }
+
+    .preview-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(100px, 1fr));
+      gap: 10px;
+      margin-top: 14px;
+    }
+    .preview-item {
+      position: relative;
+      aspect-ratio: 1;
+      border-radius: 8px;
+      overflow: hidden;
+      border: 1px solid var(--light-border);
+    }
+    .preview-item img {
+      width: 100%; height: 100%; object-fit: cover;
+    }
+    .preview-item .remove-btn {
+      position: absolute; top: 4px; right: 4px;
+      background: rgba(0,0,0,0.55); color: #fff;
+      border: none; border-radius: 50%;
+      width: 22px; height: 22px;
+      cursor: pointer; font-size: 0.75rem;
+      display: flex; align-items: center; justify-content: center;
+    }
+
+    /* ─── SUBMIT BTN ─── */
+    .submit-btn {
+      width: 100%;
+      padding: 16px;
+      background: var(--coral);
+      color: var(--white);
+      border: none;
+      border-radius: 12px;
+      font-family: 'Noto Sans KR', sans-serif;
+      font-size: 1rem;
+      font-weight: 700;
+      cursor: pointer;
+      letter-spacing: 0.04em;
+      transition: background 0.2s ease, transform 0.15s ease, box-shadow 0.2s ease;
+      margin-top: 10px;
+      position: relative;
+      box-shadow: 0 4px 16px rgba(242,101,48,0.28);
+    }
+    .submit-btn:hover { background: var(--coral-dark); transform: translateY(-2px); box-shadow: 0 8px 24px rgba(242,101,48,0.32); }
+    .submit-btn:active { transform: translateY(0); }
+    .submit-btn:disabled { background: #B0C4CE; cursor: not-allowed; transform: none; box-shadow: none; }
+
+    .submit-btn .spinner {
+      display: none;
+      width: 18px; height: 18px;
+      border: 2.5px solid rgba(255,255,255,0.4);
+      border-top-color: #fff;
+      border-radius: 50%;
+      animation: spin 0.7s linear infinite;
+      margin: 0 auto;
+    }
+    .submit-btn.loading .btn-text { display: none; }
+    .submit-btn.loading .spinner { display: block; }
+
+    @keyframes spin { to { transform: rotate(360deg); } }
+
+    /* ─── TOAST / SUCCESS ─── */
+    .toast {
+      display: none;
+      position: fixed;
+      bottom: 30px; left: 50%; transform: translateX(-50%);
+      background: var(--navy);
+      color: var(--white);
+      padding: 14px 26px;
+      border-radius: 40px;
+      font-size: 0.92rem;
+      font-weight: 500;
+      z-index: 9999;
+      box-shadow: 0 8px 24px rgba(0,0,0,0.2);
+      animation: slideUp 0.3s ease;
+    }
+    .toast.show { display: block; }
+    .toast.success { background: var(--mint); }
+    .toast.error { background: #DC2626; }
+    @keyframes slideUp { from { opacity: 0; transform: translateX(-50%) translateY(16px); } to { opacity: 1; transform: translateX(-50%) translateY(0); } }
+
+    /* ─── SUCCESS OVERLAY ─── */
+    .success-overlay {
+      display: none;
+      position: fixed; inset: 0;
+      background: rgba(235,245,251,0.97);
+      z-index: 8888;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      text-align: center;
+      padding: 40px;
+    }
+    .success-overlay.show { display: flex; animation: fadeIn 0.4s ease; }
+    @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+    .success-emoji { font-size: 4rem; margin-bottom: 16px; }
+    .success-overlay h2 {
+      font-family: 'Plus Jakarta Sans', 'Noto Sans KR', sans-serif;
+      font-size: 1.9rem;
+      font-weight: 800;
+      color: var(--navy);
+      margin-bottom: 12px;
+    }
+    .success-overlay p {
+      font-size: 1rem;
+      color: var(--slate);
+      max-width: 420px;
+      line-height: 1.8;
+      margin-bottom: 28px;
+    }
+    .success-back-btn {
+      padding: 12px 32px;
+      background: var(--ocean);
+      color: var(--white);
+      border: none;
+      border-radius: 10px;
+      font-family: 'Noto Sans KR', sans-serif;
+      font-size: 0.95rem;
+      font-weight: 700;
+      cursor: pointer;
+      transition: background 0.2s;
+    }
+    .success-back-btn:hover { background: var(--ocean-dark); }
+
+    /* ─── FOOTER ─── */
+    footer {
+      position: relative; z-index: 1;
+      text-align: center;
+      padding: 24px;
+      font-size: 0.78rem;
+      color: var(--muted);
+      opacity: 0.8;
+      border-top: 1px solid var(--border-light);
+    }
+
+    /* ─── FIELD HINT ─── */
+    .hint {
+      font-size: 0.78rem;
+      color: var(--muted);
+      margin-top: 6px;
+      line-height: 1.5;
+    }
+
+    .char-count {
+      text-align: right;
+      font-size: 0.75rem;
+      color: var(--muted);
+      margin-top: 4px;
+    }
+
+    /* ─── ERROR STATE ─── */
+    .field-error {
+      font-size: 0.78rem;
+      color: var(--error);
+      margin-top: 5px;
+      display: none;
+      font-weight: 500;
+    }
+    .field-group.has-error input,
+    .field-group.has-error textarea { border-color: var(--error); }
+    .field-group.has-error .field-error { display: block; }
+
+    /* ─── SECTION LABEL ─── */
+    .section-label {
+      font-size: 0.72rem;
+      letter-spacing: 0.18em;
+      text-transform: uppercase;
+      color: var(--ocean);
+      font-weight: 700;
+      margin-bottom: 20px;
+      padding-bottom: 8px;
+      border-bottom: 1.5px solid var(--border-light);
+    }
+
+    /* NOTICE BOX */
+    .notice-box {
+      background: rgba(2,132,199,0.05);
+      border: 1px solid rgba(2,132,199,0.18);
+      border-left: 4px solid var(--ocean);
+      border-radius: 10px;
+      padding: 14px 18px;
+      font-size: 0.85rem;
+      color: var(--slate);
+      line-height: 1.7;
+      margin-bottom: 28px;
+    }
+  </style>
+</head>
+<body>
+
+  <!-- HEADER BAND -->
+  <div class="header-band">함께, 가온 뉴스레터 — 2025 여름호 특집</div>
+
+  <!-- HERO -->
+  <div class="hero">
+    <div class="hero-label">☀️ 사내 맛집 추천 이벤트</div>
+    <h1>점심에 <em>식권 말고</em><br>외식 땡기는 날</h1>
+    <p class="hero-sub">가온 임직원 여러분의 숨겨진 맛집을 알려주세요.<br>선정된 식당은 <strong>함께, 가온 여름호</strong>에서 소개됩니다.</p>
+  </div>
+
+  <!-- REWARDS -->
+  <div class="reward-strip">
+    <div class="reward-card">
+      <div class="reward-icon">🎟️</div>
+      <div class="reward-info">
+        <strong>참여만 해도</strong>
+        <p><b>편의점 5,000원</b> 기프티콘 증정<br>참여 전원 지급</p>
+      </div>
+    </div>
+    <div class="reward-card">
+      <div class="reward-icon">🥐</div>
+      <div class="reward-info">
+        <strong>선정된 3분께</strong>
+        <p><b>파리바게트 10,000원</b> 기프티콘 증정<br>뉴스레터 소개 식당 선정 시</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- DEADLINE -->
+  <div class="deadline-wrap">
+    <div class="deadline-badge">
+      <span>📅</span> 참여 기한: 2025년 6월 2일(화)까지
+    </div>
+  </div>
+
+  <!-- FORM -->
+  <div class="form-section">
+    <div class="form-card">
+      <h2 class="form-title">맛집 추천하기</h2>
+      <p class="form-desc">
+        본사 기준 도보로 갈 수 있는 식당을 추천해주세요.<br>
+        기프티콘 발송을 위해 이름과 부서는 필수 입력입니다.
+      </p>
+
+      <div class="notice-box">
+        📌 추천해주신 내용은 사내 뉴스레터 편집팀 검토 후 선정됩니다. 중복 추천은 최초 접수 기준으로 처리됩니다.
+      </div>
+
+      <form id="restaurantForm" novalidate>
+
+        <!-- 참여자 정보 -->
+        <div class="section-label">참여자 정보</div>
+
+        <div style="display:grid; grid-template-columns: 1fr 1fr; gap: 16px;">
+          <div class="field-group" id="fg-name">
+            <label>이름 <span class="required">*</span></label>
+            <input type="text" id="name" placeholder="홍길동" />
+            <div class="field-error">이름을 입력해주세요.</div>
+          </div>
+          <div class="field-group" id="fg-dept">
+            <label>부서 <span class="required">*</span></label>
+            <input type="text" id="dept" placeholder="예: 경영지원팀" />
+            <div class="field-error">부서를 입력해주세요.</div>
+          </div>
+        </div>
+
+        <div class="divider"></div>
+
+        <!-- 식당 정보 -->
+        <div class="section-label">식당 정보</div>
+
+        <div class="field-group" id="fg-restaurant">
+          <label>식당 이름 <span class="required">*</span></label>
+          <input type="text" id="restaurant" placeholder="예: 광화문 국밥집" />
+          <div class="field-error">식당 이름을 입력해주세요.</div>
+        </div>
+
+        <div class="field-group" id="fg-maplink">
+          <label>지도 링크 <span class="required">*</span></label>
+          <div class="map-type-row">
+            <button type="button" class="map-type-btn active" data-type="naver" onclick="setMapType('naver', this)">네이버 지도</button>
+            <button type="button" class="map-type-btn" data-type="google" onclick="setMapType('google', this)">구글 지도</button>
+            <button type="button" class="map-type-btn" data-type="kakao" onclick="setMapType('kakao', this)">카카오 지도</button>
+          </div>
+          <input type="text" id="maplink" placeholder="지도 앱에서 공유 링크를 복사해서 붙여넣으세요" />
+          <div class="hint">네이버 지도 앱 → 식당 검색 → 공유 버튼 → 링크 복사</div>
+          <div class="field-error">지도 링크를 입력해주세요.</div>
+        </div>
+
+        <div class="field-group" id="fg-walktime">
+          <label>본사 기준 도보 소요시간 <span class="required">*</span></label>
+          <div class="walk-row">
+            <input type="number" id="walktime" placeholder="예: 10" min="1" max="60" />
+            <span class="unit">분 소요</span>
+          </div>
+          <div class="hint">본사(가온그룹 사옥) 정문 기준 도보 이동 시간을 입력해주세요.</div>
+          <div class="field-error">도보 소요시간을 입력해주세요.</div>
+        </div>
+
+        <div class="divider"></div>
+
+        <!-- 추천 내용 -->
+        <div class="section-label">추천 내용</div>
+
+        <div class="field-group" id="fg-menu">
+          <label>추천 메뉴 <span class="required">*</span></label>
+          <input type="text" id="menu" placeholder="예: 돼지국밥, 순대국 — 2인분 이상 주문 시 깍두기 무한제공" />
+          <div class="field-error">추천 메뉴를 입력해주세요.</div>
+        </div>
+
+        <div class="field-group" id="fg-reason">
+          <label>추천 이유 <span class="required">*</span></label>
+          <textarea id="reason" placeholder="이 식당을 추천하는 이유를 자유롭게 적어주세요. 분위기, 가격대, 특이한 점 등 뭐든 좋아요!" maxlength="300"></textarea>
+          <div class="char-count"><span id="reason-count">0</span>/300</div>
+          <div class="field-error">추천 이유를 입력해주세요.</div>
+        </div>
+
+        <!-- 이미지 -->
+        <div class="field-group">
+          <label>식당 사진 <span class="optional">(선택)</span></label>
+          <div class="image-upload-area" id="dropZone">
+            <input type="file" id="imageInput" accept="image/*" multiple onchange="handleImages(this.files)" />
+            <div class="upload-icon">📸</div>
+            <div class="upload-text">
+              <b>사진을 드래그하거나 클릭</b>해서 업로드하세요<br>
+              JPG, PNG, HEIC · 최대 3장 · 각 5MB 이하
+            </div>
+          </div>
+          <div class="preview-grid" id="previewGrid"></div>
+        </div>
+
+        <div class="divider"></div>
+
+        <button type="submit" class="submit-btn" id="submitBtn">
+          <div class="btn-text">맛집 추천 제출하기 🍽️</div>
+          <div class="spinner"></div>
+        </button>
+
+      </form>
+    </div>
+  </div>
+
+  <!-- SUCCESS OVERLAY -->
+  <div class="success-overlay" id="successOverlay">
+    <div class="success-emoji">🎉</div>
+    <h2>추천해주셔서 감사합니다!</h2>
+    <p>
+      소중한 맛집 정보가 접수되었습니다.<br>
+      편의점 기프티콘은 <strong>6월 2일 이후</strong> 순차 발송드릴 예정이에요.<br>
+      선정된 식당은 <strong>함께, 가온 여름호</strong>에서 만나보세요 🌞
+    </p>
+    <button class="success-back-btn" onclick="resetForm()">다른 식당 추천하기</button>
+  </div>
+
+  <!-- TOAST -->
+  <div class="toast" id="toast"></div>
+
+  <footer>© 가온그룹 뉴스레터 편집팀 · 문의: 내선 또는 사내 메신저</footer>
+
+  <script>
+    // ─── CONFIG ───────────────────────────────────────────────────────────────
+    // 아래 URL을 Google Apps Script 배포 후 받은 Web App URL로 교체하세요
+    const APPS_SCRIPT_URL = 'YOUR_APPS_SCRIPT_WEB_APP_URL_HERE';
+
+    // ─── MAP TYPE ─────────────────────────────────────────────────────────────
+    let selectedMapType = 'naver';
+    function setMapType(type, btn) {
+      selectedMapType = type;
+      document.querySelectorAll('.map-type-btn').forEach(b => b.classList.remove('active'));
+      btn.classList.add('active');
+    }
+
+    // ─── CHAR COUNT ───────────────────────────────────────────────────────────
+    document.getElementById('reason').addEventListener('input', function () {
+      document.getElementById('reason-count').textContent = this.value.length;
+    });
+
+    // ─── IMAGE HANDLING ───────────────────────────────────────────────────────
+    let uploadedImages = [];
+
+    function handleImages(files) {
+      const remaining = 3 - uploadedImages.length;
+      const toProcess = Array.from(files).slice(0, remaining);
+
+      toProcess.forEach(file => {
+        if (file.size > 5 * 1024 * 1024) {
+          showToast(`${file.name}: 5MB 이하 파일만 업로드 가능합니다.`, 'error');
+          return;
+        }
+        const reader = new FileReader();
+        reader.onload = (e) => {
+          uploadedImages.push({ name: file.name, data: e.target.result });
+          renderPreviews();
+        };
+        reader.readAsDataURL(file);
+      });
+    }
+
+    function renderPreviews() {
+      const grid = document.getElementById('previewGrid');
+      grid.innerHTML = '';
+      uploadedImages.forEach((img, i) => {
+        const item = document.createElement('div');
+        item.className = 'preview-item';
+        item.innerHTML = `
+          <img src="${img.data}" alt="preview" />
+          <button class="remove-btn" onclick="removeImage(${i})">✕</button>
+        `;
+        grid.appendChild(item);
+      });
+    }
+
+    function removeImage(index) {
+      uploadedImages.splice(index, 1);
+      renderPreviews();
+    }
+
+    // Drag & Drop
+    const dropZone = document.getElementById('dropZone');
+    dropZone.addEventListener('dragover', e => { e.preventDefault(); dropZone.classList.add('drag-over'); });
+    dropZone.addEventListener('dragleave', () => dropZone.classList.remove('drag-over'));
+    dropZone.addEventListener('drop', e => {
+      e.preventDefault();
+      dropZone.classList.remove('drag-over');
+      handleImages(e.dataTransfer.files);
+    });
+
+    // ─── VALIDATION ───────────────────────────────────────────────────────────
+    function validate() {
+      const fields = [
+        { id: 'name', fgId: 'fg-name' },
+        { id: 'dept', fgId: 'fg-dept' },
+        { id: 'restaurant', fgId: 'fg-restaurant' },
+        { id: 'maplink', fgId: 'fg-maplink' },
+        { id: 'walktime', fgId: 'fg-walktime' },
+        { id: 'menu', fgId: 'fg-menu' },
+        { id: 'reason', fgId: 'fg-reason' },
+      ];
+      let ok = true;
+      fields.forEach(f => {
+        const el = document.getElementById(f.id);
+        const fg = document.getElementById(f.fgId);
+        if (!el.value.trim()) { fg.classList.add('has-error'); ok = false; }
+        else { fg.classList.remove('has-error'); }
+      });
+      return ok;
+    }
+
+    // ─── TOAST ────────────────────────────────────────────────────────────────
+    function showToast(msg, type = '') {
+      const t = document.getElementById('toast');
+      t.textContent = msg;
+      t.className = `toast show ${type}`;
+      setTimeout(() => t.classList.remove('show'), 3500);
+    }
+
+    // ─── SUBMIT ───────────────────────────────────────────────────────────────
+    document.getElementById('restaurantForm').addEventListener('submit', async function (e) {
+      e.preventDefault();
+      if (!validate()) { showToast('필수 항목을 모두 입력해주세요.', 'error'); return; }
+
+      const btn = document.getElementById('submitBtn');
+      btn.classList.add('loading');
+      btn.disabled = true;
+
+      const payload = {
+        timestamp: new Date().toLocaleString('ko-KR'),
+        name: document.getElementById('name').value.trim(),
+        dept: document.getElementById('dept').value.trim(),
+        restaurant: document.getElementById('restaurant').value.trim(),
+        mapType: selectedMapType,
+        maplink: document.getElementById('maplink').value.trim(),
+        walktime: document.getElementById('walktime').value + '분',
+        menu: document.getElementById('menu').value.trim(),
+        reason: document.getElementById('reason').value.trim(),
+        images: uploadedImages.map(i => i.data), // base64 array
+      };
+
+      try {
+        if (APPS_SCRIPT_URL === 'YOUR_APPS_SCRIPT_WEB_APP_URL_HERE') {
+          // 개발 모드: URL 미설정 시 콘솔 출력
+          console.log('제출 데이터:', payload);
+          await new Promise(r => setTimeout(r, 800));
+          showSuccess();
+          return;
+        }
+
+        const resp = await fetch(APPS_SCRIPT_URL, {
+          method: 'POST',
+          headers: { 'Content-Type': 'text/plain' }, // GAS CORS quirk
+          body: JSON.stringify(payload),
+        });
+        const result = await resp.json();
+        if (result.status === 'ok') showSuccess();
+        else showToast('오류가 발생했습니다. 다시 시도해주세요.', 'error');
+      } catch (err) {
+        console.error(err);
+        showToast('네트워크 오류. 잠시 후 다시 시도해주세요.', 'error');
+      } finally {
+        btn.classList.remove('loading');
+        btn.disabled = false;
+      }
+    });
+
+    function showSuccess() {
+      document.getElementById('successOverlay').classList.add('show');
+    }
+
+    function resetForm() {
+      document.getElementById('successOverlay').classList.remove('show');
+      document.getElementById('restaurantForm').reset();
+      uploadedImages = [];
+      renderPreviews();
+      document.getElementById('reason-count').textContent = '0';
+      document.querySelectorAll('.field-group').forEach(fg => fg.classList.remove('has-error'));
+    }
+  </script>
+</body>
+</html>
