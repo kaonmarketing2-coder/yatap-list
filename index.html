@@ -554,10 +554,10 @@
       </div>
     </div>
     <div class="reward-card">
-      <div class="reward-icon">🥐</div>
+      <div class="reward-icon">🍗</div>
       <div class="reward-info">
         <strong>선정된 3분께</strong>
-        <p><b>파리바게트 10,000원</b> 기프티콘 증정<br>뉴스레터 소개 식당 선정 시</p>
+        <p><b>치킨 기프티콘</b> 증정<br>뉴스레터 소개 식당 선정 시</p>
       </div>
     </div>
   </div>
@@ -579,7 +579,7 @@
       </p>
 
       <div class="notice-box">
-        📌 추천해주신 내용은 실제 검증 후 선정됩니다.
+        📌 추천해주신 내용은 사내 뉴스레터 편집팀 검토 후 선정됩니다. 중복 추천은 최초 접수 기준으로 처리됩니다.
       </div>
 
       <form id="restaurantForm" novalidate>
@@ -595,7 +595,7 @@
           </div>
           <div class="field-group" id="fg-dept">
             <label>부서 <span class="required">*</span></label>
-            <input type="text" id="dept" placeholder="예: 마케팅팀" />
+            <input type="text" id="dept" placeholder="예: 경영지원팀" />
             <div class="field-error">부서를 입력해주세요.</div>
           </div>
         </div>
@@ -619,7 +619,7 @@
             <button type="button" class="map-type-btn" data-type="kakao" onclick="setMapType('kakao', this)">카카오 지도</button>
           </div>
           <input type="text" id="maplink" placeholder="지도 앱에서 공유 링크를 복사해서 붙여넣으세요" />
-          <div class="hint"> 지도 앱 → 식당 검색 → 공유 버튼 → 링크 복사</div>
+          <div class="hint">네이버 지도 앱 → 식당 검색 → 공유 버튼 → 링크 복사</div>
           <div class="field-error">지도 링크를 입력해주세요.</div>
         </div>
 
@@ -682,7 +682,7 @@
     <h2>추천해주셔서 감사합니다!</h2>
     <p>
       소중한 맛집 정보가 접수되었습니다.<br>
-      기프티콘은 <strong>6월 4일 이후에 </strong> 순차 발송드릴 예정이에요.<br>
+      기프티콘은 <strong>6월 2일 이후</strong> 순차 발송드릴 예정이에요.<br>
       선정된 식당은 <strong>함께, 가온 여름호</strong>에서 만나보세요 🌞
     </p>
     <button class="success-back-btn" onclick="resetForm()">다른 식당 추천하기</button>
@@ -821,16 +821,14 @@
           return;
         }
 
-        // ✅ 수정된 코드
-await fetch(APPS_SCRIPT_URL, {
-  method: 'POST',
-  headers: { 'Content-Type': 'text/plain' },
-  body: JSON.stringify(payload),
-  redirect: 'follow',
-  mode: 'no-cors',   // CORS 차단 우회 — GAS 크로스오리진 요청에 필수
-});
-// no-cors 모드에서는 응답 body를 읽을 수 없으므로, throw 없이 통과되면 성공으로 처리
-showSuccess();
+        const resp = await fetch(APPS_SCRIPT_URL, {
+          method: 'POST',
+          headers: { 'Content-Type': 'text/plain' }, // GAS CORS quirk
+          body: JSON.stringify(payload),
+        });
+        const result = await resp.json();
+        if (result.status === 'ok') showSuccess();
+        else showToast('오류가 발생했습니다. 다시 시도해주세요.', 'error');
       } catch (err) {
         console.error(err);
         showToast('네트워크 오류. 잠시 후 다시 시도해주세요.', 'error');
